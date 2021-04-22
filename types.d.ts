@@ -1,4 +1,4 @@
-interface PostInterface {
+interface postInterface {
   id: string
   title: boolean
   description: string

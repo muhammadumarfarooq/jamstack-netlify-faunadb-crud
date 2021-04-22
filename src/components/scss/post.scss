@@ -1,0 +1,19 @@
+.post {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  font-family: sans-serif;
+  padding: 10px 0;
+
+  &--title {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 8px 0;
+  }
+
+  &--description {
+    font-size: 14px;
+    margin: 0;
+  }
+}

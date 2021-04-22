@@ -2,9 +2,11 @@ import * as React from "react"
 import AddPostForm from "../components/AddPostForm"
 import { useEffect, useState } from "react"
 import Posts from "../components/Posts"
+import EditPostDialog from "../components/EditPostDialog"
 
 const IndexPage = () => {
   const [posts, setPosts] = useState([])
+  const [open, setOpen] = React.useState(false)
   
   const handleFetchPosts = async () => {
     try {
@@ -39,11 +41,34 @@ const IndexPage = () => {
     }
   }
   
+  const handleDeletePost = async (todo) => {
+    try {
+      const { id } = todo
+      const resp = await fetch(".netlify/functions/post-delete", {
+        body: JSON.stringify({ id }),
+        method: "POST"
+      })
+      await resp.json()
+      setPosts((prevState) => {
+        return prevState.filter(post => post.id !== id)
+      })
+    } catch (e) {
+      console.log("Something went wrong!")
+    }
+  }
+  const handleEditPost = (todo) => {
+  
+  }
   
   return (
     <div>
       <AddPostForm handleSubmit={handleSubmit} />
-      <Posts posts={posts} />
+      <Posts
+        posts={posts}
+        handleDeletePost={handleDeletePost}
+        handleEditPost={handleEditPost}
+      />
+      <EditPostDialog />
     </div>
   )
 }
