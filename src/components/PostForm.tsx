@@ -1,5 +1,6 @@
 import * as React from "react"
 import { useState } from "react"
+import Error from "./Error"
 
 interface Post {
   title: String
@@ -15,6 +16,7 @@ interface AddPostFromProps {
 }
 
 const PostForm = ({ handleSubmit, title, description, id, buttonText }: AddPostFromProps): JSX.Element => {
+  const [error, setError] = useState("")
   const [state, setState] = useState({
     id: id || "",
     title: title || "",
@@ -29,11 +31,21 @@ const PostForm = ({ handleSubmit, title, description, id, buttonText }: AddPostF
   
   const onSubmit = (e) => {
     e.preventDefault()
+    
+    if ( !state.title || !state.description ) {
+      setError("Input Field cannot be empty")
+      setTimeout(() => {
+        setError("")
+      }, 3000)
+      return
+    }
+    
     handleSubmit(state)
   }
   
   return (
     <form onSubmit={onSubmit} className="add-post-form">
+      {error && <Error text={error} />}
       <input onChange={handleChange} value={state.title} name="title" />
       <input onChange={handleChange} value={state.description} name="description" />
       

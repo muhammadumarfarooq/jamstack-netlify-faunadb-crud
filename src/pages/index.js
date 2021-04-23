@@ -47,6 +47,9 @@ const IndexPage = () => {
   }
   
   const handleDeletePost = async (todo) => {
+    if ( !window.confirm("Are you sure to delete!") ) {
+      return
+    }
     try {
       const { id } = todo
       const resp = await fetch(".netlify/functions/post-delete", {
