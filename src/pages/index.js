@@ -1,11 +1,16 @@
 import * as React from "react"
-import AddPostForm from "../components/AddPostForm"
+import PostForm from "../components/PostForm"
 import { useEffect, useState } from "react"
 import Posts from "../components/Posts"
 import EditPostDialog from "../components/EditPostDialog"
 
 const IndexPage = () => {
   const [posts, setPosts] = useState([])
+  const [postToEdit, setPostToEdit] = useState({
+    id: "",
+    title: "",
+    description: ""
+  })
   const [open, setOpen] = React.useState(false)
   
   const handleFetchPosts = async () => {
@@ -25,7 +30,7 @@ const IndexPage = () => {
   }, [])
   
   
-  const handleSubmit = async ({ title, description }) => {
+  const handleAddPost = async ({ title, description }) => {
     try {
       const resp = await fetch(".netlify/functions/post-create", {
         body: JSON.stringify({ title, description }),
@@ -56,19 +61,50 @@ const IndexPage = () => {
       console.log("Something went wrong!")
     }
   }
-  const handleEditPost = (todo) => {
   
+  const handleSubmitEditPost = async ({ title, description, id }) => {
+    try {
+      const data = {
+        title,
+        description
+      }
+      const resp = await fetch(".netlify/functions/post-update", {
+        body: JSON.stringify({ data, id }),
+        method: "POST"
+      })
+      await resp.json()
+      setPosts((prevState) => {
+        return prevState.map(post => post.id === id ? { ...post, title, description } : post)
+      })
+      handleCloseEditDialog()
+    } catch (e) {
+      console.log("Something went wrong!")
+    }
+  }
+  
+  const handleEditPost = (post) => {
+    setPostToEdit(post)
+    setOpen(true)
+  }
+  
+  const handleCloseEditDialog = () => {
+    setOpen(false)
   }
   
   return (
     <div>
-      <AddPostForm handleSubmit={handleSubmit} />
+      <PostForm buttonText="Save" handleSubmit={handleAddPost} />
       <Posts
         posts={posts}
         handleDeletePost={handleDeletePost}
         handleEditPost={handleEditPost}
       />
-      <EditPostDialog />
+      <EditPostDialog
+        open={open}
+        handleClose={handleCloseEditDialog}
+        postToEdit={postToEdit}
+        handleSubmit={handleSubmitEditPost}
+      />
     </div>
   )
 }

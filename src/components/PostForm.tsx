@@ -8,15 +8,18 @@ interface Post {
 
 interface AddPostFromProps {
   handleSubmit: ({ title, description }: Post) => void
+  title?: string
+  description?: string
+  id?: string
+  buttonText: string
 }
 
-const AddPostForm = ({ handleSubmit }: AddPostFromProps): JSX.Element => {
+const PostForm = ({ handleSubmit, title, description, id, buttonText }: AddPostFromProps): JSX.Element => {
   const [state, setState] = useState({
-    title: "",
-    description: ""
+    id: id || "",
+    title: title || "",
+    description: description || ""
   })
-  
-  const { title, description } = state
   
   const handleChange = (e) => {
     setState((prevState) => {
@@ -31,12 +34,12 @@ const AddPostForm = ({ handleSubmit }: AddPostFromProps): JSX.Element => {
   
   return (
     <form onSubmit={onSubmit} className="add-post-form">
-      <input onChange={handleChange} value={title} name="title" />
-      <input onChange={handleChange} value={description} name="description" />
+      <input onChange={handleChange} value={state.title} name="title" />
+      <input onChange={handleChange} value={state.description} name="description" />
       
-      <button type="submit">Add</button>
+      <button type="submit">{buttonText}</button>
     </form>
   )
 }
 
-export default AddPostForm
+export default PostForm
